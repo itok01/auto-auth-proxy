@@ -9,8 +9,8 @@ import (
 
   "github.com/getlantern/systray"
 
-  "./src/icon"
-  "./src/proxy"
+  "github.com/itok01/auto-auth-proxy/src/icon"
+  "github.com/itok01/auto-auth-proxy/src/proxy"
 )
 
 var localProxy = os.Args[5]
