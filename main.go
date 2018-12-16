@@ -6,26 +6,26 @@ import (
   "net/http"
   "net/url"
   "os"
-  
+
   "github.com/getlantern/systray"
-  
+
   "./src/icon"
-	"./src/proxy"
+  "./src/proxy"
 )
 
 var localProxy = os.Args[5]
 
 func onReady() {
-	systray.SetIcon(icon.Data)
+  systray.SetIcon(icon.Data)
   systray.SetTitle("Auto Auth Proxy")
   systray.SetTooltip(fmt.Sprintf("localhost:%s", localProxy))
-	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
+  mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
 
-	go func() {
-		<-mQuit.ClickedCh
-		systray.Quit()
+  go func() {
+    <-mQuit.ClickedCh
+    systray.Quit()
   }()
-  
+
   proxyUrl, err := url.Parse(fmt.Sprintf("http://%s:%s@%s", proxy.User, proxy.Pass, proxy.Proxy))
   if err != nil {
     log.Fatal(err)
@@ -39,5 +39,5 @@ func onReady() {
 func onExit() {}
 
 func main() {
-	systray.Run(onReady, onExit)
+  systray.Run(onReady, onExit)
 }
