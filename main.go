@@ -5,6 +5,7 @@ import (
   "log"
   "net/http"
   "net/url"
+  "os"
   
   "github.com/getlantern/systray"
   
@@ -12,10 +13,12 @@ import (
 	"./src/proxy"
 )
 
+var localProxy = os.Args[5]
+
 func onReady() {
 	systray.SetIcon(icon.Data)
   systray.SetTitle("Auto Auth Proxy")
-  systray.SetTooltip("localhost:8480")
+  systray.SetTooltip(fmt.Sprintf("localhost:%s", localProxy))
 	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
 
 	go func() {
@@ -30,7 +33,7 @@ func onReady() {
   http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
 
   handler := http.HandlerFunc(proxy.HandleHttp)
-  log.Fatal(http.ListenAndServe(":8480", handler))
+  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", localProxy), handler))
 }
 
 func onExit() {}

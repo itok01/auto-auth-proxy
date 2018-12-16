@@ -7,13 +7,14 @@ import (
   "log"
   "net"
   "net/http"
+  "os"
 )
 
 var (
-  User = ""
-  Pass = ""
-  Host = ""
-  port = ""
+  User = os.Args[1]
+  Pass = os.Args[2]
+  Host = os.Args[3]
+  port = os.Args[4]
 
   auth = "Basic " + base64.StdEncoding.EncodeToString([]byte(User+":"+Pass))
   Proxy = fmt.Sprintf("%s:%s", Host, port)
