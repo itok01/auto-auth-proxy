@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
   "encoding/base64"
@@ -7,20 +7,19 @@ import (
   "log"
   "net"
   "net/http"
-  "net/url"
 )
 
 var (
-  user = ""
-  pass = ""
-  host = ""
+  User = ""
+  Pass = ""
+  Host = ""
   port = ""
-  
-  auth = "Basic " + base64.StdEncoding.EncodeToString([]byte(user+":"+pass))
-  proxy = fmt.Sprintf("%s:%s", host, port)
+
+  auth = "Basic " + base64.StdEncoding.EncodeToString([]byte(User+":"+Pass))
+  Proxy = fmt.Sprintf("%s:%s", Host, port)
 )
 
-func handleHttp(w http.ResponseWriter, r *http.Request) {
+func HandleHttp(w http.ResponseWriter, r *http.Request) {
   log.Printf("[%s] %s", r.Method, r.URL)
 
   // get connection
@@ -35,7 +34,7 @@ func handleHttp(w http.ResponseWriter, r *http.Request) {
   }
 
   // connect proxy
-  proxyConn, err := net.Dial("tcp", proxy)
+  proxyConn, err := net.Dial("tcp", Proxy)
   if err != nil {
     proxyConn.Close()
     log.Fatal(err)
@@ -56,16 +55,4 @@ func handleHttp(w http.ResponseWriter, r *http.Request) {
     io.Copy(proxyConn, conn)
     conn.Close()
   }()
-}
-
-
-func main() {
-  proxyUrl, err := url.Parse(fmt.Sprintf("http://%s:%s@%s", user, pass, proxy))
-  if err != nil {
-    log.Fatal(err)
-  }
-  http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
-
-  handler := http.HandlerFunc(handleHttp)
-  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), handler))
 }
